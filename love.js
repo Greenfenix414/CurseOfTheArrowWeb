@@ -458,7 +458,7 @@ SOFTWARE.
 
   var search = url.searchParams;
   var arg = search.get('arg');
-  var uri = search.get('g');
+  var uri = 'arrow.love';
   var ops = {
     version: search.get('v') || '11.5',
     compat: search.get('c') != '0',
