@@ -453,8 +453,7 @@ SOFTWARE.
   
   // Parse arguments from the URL address
   var url = new URL(script.src);
-  if (!url.searchParams.has('g'))
-    url = new URL(window.location.href);
+ ;
 
   var search = url.searchParams;
   var arg = search.get('arg');
@@ -508,10 +507,10 @@ SOFTWARE.
       window.location.reload();
   };
   
-  if (!window.SharedArrayBuffer) {
+ /* if (!window.SharedArrayBuffer) {
     throw new Error('The Cross-Origin Policy is not configured properly');
     return;
-  }
+  }*/
 
   // Runs the requested package
   Player.runLove = function () {
