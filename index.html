@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <base href="https://cdn.jsdelivr.net/gh/Greenfenix414/CurseOfTheArrowWeb@latest/">
+    <base href="https://cdn.jsdelivr.net/gh/Greenfenix414/CurseOfTheArrowWeb@cee51bc0c4726f67fbc0cff968030b323b47364a/">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no">
     <title>löve.js</title>
@@ -10,6 +10,54 @@
   <body>
     <canvas id="canvas"></canvas>
     <div id="spinner" class="pending"></div>
+    <script>const realFetch = window.fetch;
+
+		function mergeFiles(fileParts) {
+			return new Promise((resolve, reject) => {
+				let buffers = [];
+
+				function fetchPart(index) {
+					if (index >= fileParts.length) {
+						let mergedBlob = new Blob(buffers);
+						let mergedFileUrl = URL.createObjectURL(mergedBlob);
+						resolve(mergedFileUrl);
+						return;
+					}
+					realFetch(fileParts[index])
+						.then((response) => {
+							if (!response.ok)
+								throw new Error("Missing part: " + fileParts[index]);
+							return response.arrayBuffer();
+						})
+						.then((data) => {
+							buffers.push(data);
+							fetchPart(index + 1);
+						})
+						.catch(reject);
+				}
+				fetchPart(0);
+			});
+		}
+
+		function getParts(file, totalParts) {
+			let parts = [];
+			for (let i = 1; i <= totalParts; i++) {
+				parts.push(`${file}.part${i}`);
+			}
+			return parts;
+		}
+	
+			mergeFiles(getParts("https://cdn.jsdelivr.net/gh/Greenfenix414/CurseOfTheArrowWeb/assets/arrow.love ", 9))
+		.then((loveUrl) => {
+			window.fetch = async function (url, ...args) {
+				if (url.endsWith(".love")) {
+					return realFetch(loveUrl, ...args);
+				} else {
+					return realFetch(url, ...args);
+				}
+			};
+			window.startGodot();
+		});</script>
     <script>/*
 This file is part of "love.js" by 2dengine.
 https://2dengine.com/doc/lovejs.html
